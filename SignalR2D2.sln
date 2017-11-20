@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR2D2", "SignalR2D2\SignalR2D2.csproj", "{021E5D7F-6120-4A8B-BB78-0B3A6CCB38D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR2D2.Tests", "SignalR2D2.Tests\SignalR2D2.Tests.csproj", "{94CC1E83-41B4-45A4-B93C-571AFA30430F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{021E5D7F-6120-4A8B-BB78-0B3A6CCB38D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{021E5D7F-6120-4A8B-BB78-0B3A6CCB38D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{021E5D7F-6120-4A8B-BB78-0B3A6CCB38D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94CC1E83-41B4-45A4-B93C-571AFA30430F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94CC1E83-41B4-45A4-B93C-571AFA30430F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94CC1E83-41B4-45A4-B93C-571AFA30430F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94CC1E83-41B4-45A4-B93C-571AFA30430F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
