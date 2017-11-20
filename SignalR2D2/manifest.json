@@ -1,0 +1,31 @@
+﻿{
+  "short_name": "SignalR2D2",
+  "name": "SignalR2D2 the Poker Planning App",
+  "icons": [
+    {
+      "src": "launcher-icon-1x.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "launcher-icon-2x.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "launcher-icon-3x.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "launcher-icon-4x.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "background_color": "#97bbd8",
+  "theme_color": "#97bbd8",
+  "start_url": "/?launcher=true",
+  "display": "standalone",
+  "orientation": "portrait"
+}

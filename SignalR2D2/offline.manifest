@@ -1,0 +1,15 @@
+﻿CACHE MANIFEST
+
+/
+/Content/bootstrap.css
+/Content/Site.css
+/Scripts/jquery-1.10.2.js
+/Scripts/bootstrap.js
+/Scripts/respond.js
+
+FALLBACK:
+/offline.html
+
+
+NETWORK:
+*

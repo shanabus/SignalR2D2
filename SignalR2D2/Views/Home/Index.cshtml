@@ -1,0 +1,186 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <p id="storyBanner"><em class="text-muted">choose a story!</em></p>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <p><label class="label label-info">online:</label> <span id="users"></span></p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 activePanel" id="storyPanel">
+        <h2>Story to discuss</h2>
+        <form id="storyForm">
+            <label for="story">Enter a story:</label>
+            <textarea id="story" style="width: 100%;" class="form-control"></textarea>
+            <br/>
+            <button type="button" class="btn btn-primary" id="submitStory">Submit Story</button>
+            <button type="button" class="btn btn-warning" id="resetStory">Reset</button>
+        </form>
+    </div>
+    <div class="col-md-4" id="estimatesPanel">
+        <h2>My Estimate</h2>
+        <form id="pointsForm">
+            <div class="tabs">
+                <div class="tab">
+                    <input type="radio" name="pointGroup" id="tab-1" value="1">
+                    <label for="tab-1">One</label>
+                    <div class="content">
+                        <p>Easy, less than a day</p>
+                    </div>
+                </div>
+
+                <div class="tab">
+                    <input type="radio" name="pointGroup" id="tab-3" value="3">
+                    <label for="tab-3">Three</label>
+                    <div class="content">
+                        <p>Medium difficulty, may span a day or two</p>
+                    </div>
+                </div>
+
+                <div class="tab">
+                    <input type="radio" name="pointGroup" id="tab-5" value="5">
+                    <label for="tab-5">Five</label>
+                    <div class="content">
+                        <p>Difficult, must limit distractiosn</p>
+                    </div>
+                </div>
+
+                <div class="tab">
+                    <input type="radio" name="pointGroup" id="tab-8" value="8">
+                    <label for="tab-8">Eight</label>
+                    <div class="content">
+                        <p>Challenging, break out the cookies</p>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-success" id="submitEstimate" disabled>Submit my Estimate</button>
+        </form>
+    </div>
+    <div class="col-md-4" id="resultsPanel">
+        <h2>Results</h2>
+        <div id="results"></div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
+                    // Registration was successful
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }).catch(function (err) {
+                    // registration failed :(
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+
+    <script>
+
+        $(function() {
+            var hub = $.connection.estimateHub;
+            
+            hub.client.submitStory = function (story) {
+                // disable controls
+                $("#story").val(story).attr('disabled', true);
+                $("#storyBanner").html(story);
+                $("#submitStory").attr('disabled', true);
+
+                // reset estimate form
+                $("#pointsForm")[0].reset();
+                $("#pointsForm :input").prop('readonly', false).attr('disabled', false);
+
+                // empty results
+                $("#results").empty();
+
+                // reset active panel
+                $("#storyPanel, #resultsPanel").removeClass("activePanel");
+                $("#estimatesPanel").addClass("activePanel");
+            }
+
+            hub.client.resetStory = function () {
+                $("#story").val("").attr('disabled', false);
+                $("#storyBanner").html('<em class="text-muted">choose a story!</em>');
+                $("#pointsForm :input").attr('disabled', true);
+                $("#submitStory").attr('disabled', false);
+                // empty results
+                $("#results").empty();
+
+                // reset active panel
+                $("#estimatesPanel, #resultsPanel").removeClass("activePanel");
+                $("#storyPanel").addClass("activePanel");
+            }
+
+            hub.client.displayResults = function (estimates) {
+                //$("#results").empty();
+                var sum = 0;
+                for (var i = 0; i < estimates.length; i++) {
+                    $("#results").append("<b>" + estimates[i].Value + "</b> " + estimates[i].Name + "<br>");
+                    sum += parseInt(estimates[i].Value); 
+                }
+                var avg = sum / estimates.length;
+                $("#results").append("<hr /><h4>" + estimates.length + " users estimate " + avg + " pts</h4>");
+
+                // reset active panel
+                $("#storyPanel, #estimatesPanel").removeClass("activePanel");
+                $("#resultsPanel").addClass("activePanel");
+            }
+
+            hub.client.setUser = function(user) {
+                $("#user").html(user);
+            }
+
+            hub.client.promptUser = function() {
+                var user = prompt('Enter your name:', '');
+
+                if (user != null) {
+                    hub.server.setUser(user);
+                    $("#user").html(user);
+                } else {
+                    $(":input, button").attr("disabled", true);
+                }
+            }
+
+            hub.client.updateUsers = function(users) {
+                $("#users").html(users.join(', '));
+            }
+
+            //$.connection.hub.logging = true;
+            $("#user").one('click', function() {
+                $.connection.hub.start().done(function () {
+
+                
+                    // outbound events
+                    $("#submitStory").on('click', function() {
+                        hub.server.submitStory($("#story").val());
+                    });
+                    $("#resetStory").on('click', function() {
+                        hub.server.resetStory();
+                    });
+
+                    $("#submitEstimate").on('click', function () {
+                        if ($("input[name=pointGroup]:checked").val()) {
+                            // freeze form
+                            $("#pointsForm :input").prop('readonly', true).attr('disabled', true);
+
+                            // send to server
+                            hub.server.submitEstimate("Shane", $("input[name=pointGroup]:checked").val());
+                        }
+                    });
+                    
+                    // find or prompt user
+                    hub.server.getUser();
+                });
+            });
+        })
+    </script>
+}
